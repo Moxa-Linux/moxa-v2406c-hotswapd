@@ -1,0 +1,16 @@
+#!/bin/sh
+file=`basename $0`
+num=$1
+
+#rescan bus
+SATA_PORT1="host1"
+SATA_PORT2="host2"
+
+if [ $num -eq 1 ]; then
+	echo "- - -" > /sys/class/scsi_host/$SATA_PORT1/scan 
+else
+	echo "- - -" > /sys/class/scsi_host/$SATA_PORT2/scan 
+fi
+
+echo  mxhtspd: Scan disk $num ok
+

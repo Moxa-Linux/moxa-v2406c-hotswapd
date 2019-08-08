@@ -1,0 +1,9 @@
+# Also create link in /dev/diskxpx in /dev/ when disk is probe
+KERNEL!="sd[a-z][0-9]*", GOTO="auto_mount_end"
+KERNELS=="host1", ACTION=="add", RUN+="/bin/mkdir -p /media/disk1p%n", RUN+="/bin/mount /dev/%k /media/disk1p%n"
+KERNELS=="host1", ACTION=="change", RUN+="/bin/mkdir -p /media/disk1p%n", RUN+="/bin/mount /dev/%k /media/disk1p%n"
+KERNELS=="host1", ACTION=="remove", RUN+="/bin/umount -l /media/disk1p%n", RUN+="/bin/rmdir /media/disk1p%n"
+KERNELS=="host2", ACTION=="add", RUN+="/bin/mkdir -p /media/disk2p%n", RUN+="/bin/mount /dev/%k /media/disk2p%n"
+KERNELS=="host2", ACTION=="change", RUN+="/bin/mkdir -p /media/disk2p%n", RUN+="/bin/mount /dev/%k /media/disk2p%n"
+KERNELS=="host2", ACTION=="remove", RUN+="/bin/umount -l /media/disk2p%n", RUN+="/bin/rmdir /media/disk2p%n"
+LABEL="auto_mount_end"

@@ -1,0 +1,9 @@
+#!/bin/sh
+file=`basename $0`
+num=$1
+
+#Add your commands here
+
+#Internal operation
+mxhtspd-remove-disk $num
+
