@@ -7,10 +7,10 @@
 #ifdef DEBUG
 	#define d(fmt, args...) printf("%s: "fmt, __FUNCTION__, ##args)
 	#define dd(fmt, args...)
-#else 
-	#define d(fmt, args...) 
+#else
+	#define d(fmt, args...)
 	#define dd(fmt, args...)
-#endif 
+#endif
 
 
 typedef struct _htsp_info {
