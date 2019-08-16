@@ -1,0 +1,26 @@
+#!/bin/sh
+file=`basename $0`
+num=$1
+
+if [ $num -eq 1 ]; then
+	host="host${num}"; target="target${num}:0:0"; path="${num}:0:0:0"
+else 
+	host="host${num}"; target="target${num}:0:0"; path="${num}:0:0:0"
+fi
+
+#Check partitions
+field="\$1"
+partitions=`mount | awk -F' ' "/media\/disk$num/{print $field}" | xargs -n 10`
+
+#Umount partitions
+if [ ! -z "$partitions" ] ; then
+	echo 1 > /sys/class/scsi_host/$host/device/$target/$path/delete
+
+	echo $file: WARNING! /media/disk${num}pn should be unmounted before disk is removed
+	echo $file: Force to umount them
+	for i in $partitions; do 
+		umount  $i
+	done
+fi
+
+echo mxhtspd: Check disk $num status ok
