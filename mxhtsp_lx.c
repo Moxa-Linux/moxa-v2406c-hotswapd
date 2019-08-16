@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #include "mxhtsp.h" /* prototype */
 
-int mxhtsp_set_led(int fd, int led_num, int on) 
+int mxhtsp_set_led(int fd, int led_num, int on)
 {
 	mxhtsp_param p;
 
@@ -35,30 +35,29 @@ int mxhtsp_is_button_pressed(int fd, int btn_num)
 	} else {
 		return p.val;
 	}
-
 }
 
-int mxhtsp_is_disk_busy(int fd, int disk_num) 
+int mxhtsp_is_disk_busy(int fd, int disk_num)
 {
 	mxhtsp_param p;
 
 	p.disk_num = disk_num;
 	p.val = 0;
-	if (ioctl(fd, IOCTL_GET_DISK_STATUS, &p)) 
+	if (ioctl(fd, IOCTL_GET_DISK_STATUS, &p))
 		return -1;
-	else  
+	else
 		return p.val;
 }
 
-int mxhtsp_is_disk_plugged(int fd, int disk_num) 
+int mxhtsp_is_disk_plugged(int fd, int disk_num)
 {
 	mxhtsp_param p;
 
 	p.disk_num = disk_num;
 	p.val = 0;
-	if (ioctl(fd, IOCTL_CHECK_DISK_PLUGGED, &p)) 
+	if (ioctl(fd, IOCTL_CHECK_DISK_PLUGGED, &p))
 		return -1;
-	else 
+	else
 		return p.val;
 }
 
@@ -69,10 +68,11 @@ int mxhtsp_open(void)
 	return fd;
 }
 
-int mxhtsp_check_partition_usage(const char *mount_point) {
-   	FILE *fp = NULL;
+int mxhtsp_check_partition_usage(const char *mount_point)
+{
+	FILE *fp = NULL;
 	char buf[BUFSIZ];
-	char *delim=" \n";
+	char *delim = " \n";
 	char cmd[50];
 	char *token_percent;
 	char *token_path;
@@ -85,20 +85,23 @@ int mxhtsp_check_partition_usage(const char *mount_point) {
 	}
 
 	/* skip the first time  */
-	if (!fgets(buf, BUFSIZ, fp)) 
+	if (!fgets(buf, BUFSIZ, fp))
 		goto err;
 
 	while (fgets(buf, BUFSIZ, fp)) {
-		if (!strtok(buf, delim)) break;
-		if (!strtok(NULL, delim)) break;
-		if (!strtok(NULL, delim)) break;
-		if (!strtok(NULL, delim)) break;
-		if (!(token_percent = strtok(NULL, delim))) break;
-
+		if (!strtok(buf, delim))
+			break;
+		if (!strtok(NULL, delim))
+			break;
+		if (!strtok(NULL, delim))
+			break;
+		if (!strtok(NULL, delim))
+			break;
+		if (!(token_percent = strtok(NULL, delim)))
+			break;
 		if (!(token_path = strtok(NULL, delim))) {
 			break;
-		}
-		else if (strcmp(token_path, mount_point) == 0) {
+		} else if (strcmp(token_path, mount_point) == 0) {
 			sscanf(token_percent, "%d%%", &percent);
 			fclose(fp);
 			return percent;
@@ -108,5 +111,3 @@ err:
 	pclose(fp);
 	return -1;
 }
-
-
