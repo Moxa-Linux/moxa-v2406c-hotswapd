@@ -17,7 +17,7 @@
 
 /* Jared, the control should be moved the global variable for accessing safely in another sub-function */
 /* default control setting */
-static daemon_ctrl control= {
+static daemon_ctrl control = {
 	.time_btn_long = TIME_BTN_LONG_PRESSED,
 	.time_chk_part = TIME_PARTITION_CHECK,
 	.force_chk_part = 0,
@@ -29,7 +29,7 @@ static daemon_ctrl control= {
 
 static daemon_ctrl *ctrl;	/* A pointer for accessing control */
 
-static const char *dir="/usr/sbin/";
+static const char *dir = "/usr/sbin/";
 
 static void msleep(unsigned long msec)
 {
@@ -39,7 +39,7 @@ static void msleep(unsigned long msec)
 	select(1, NULL, NULL, NULL, &time);
 }
 
-static void mprintf(const char *fmt, ... )
+static void mprintf(const char *fmt, ...)
 {
 	char buf[BUFSIZ];
 	va_list ap;
@@ -49,8 +49,8 @@ static void mprintf(const char *fmt, ... )
 	va_end(ap);
 
 	if (ctrl->log_facility >= 0)
-		syslog(LOG_NOTICE,"%s", buf);
-	else 
+		syslog(LOG_NOTICE, "%s", buf);
+	else
 		printf("mxhtspd: %s", buf);
 }
 
@@ -63,34 +63,34 @@ static void execute_script(char *cmd, int param)
 	system(name);
 }
 
-static void handle_disk_plugged(int fd, int n, htsp_info *info) 
+static void handle_disk_plugged(int fd, int n, htsp_info *info)
 {
 	int ret;
 	ret = mxhtsp_is_disk_plugged(fd, n);
 
 	if ((ret == 1) && (info[n-1].disk_plugged == 0)) {
 		mprintf("Disk %d is plugged\n", n);
-		if (ctrl->verbose) mprintf("call action-disk-plugged %d\n", n);
+		if (ctrl->verbose)
+			mprintf("call action-disk-plugged %d\n", n);
 		execute_script("action-disk-plugged", n);
 		ctrl->force_chk_part = 1;
 		info[n-1].first_insert = 1;
 		mxhtsp_set_led(fd, n, 1);
-                info[n-1].led_on = 1;
+		info[n-1].led_on = 1;
 		sleep (1);
-	}
-	else if ((ret == 0) && (info[n-1].disk_plugged == 1)) {
-
+	} else if ((ret == 0) && (info[n-1].disk_plugged == 1)) {
 		mprintf("Disk %d is unplugged\n", n);
-		if (ctrl->verbose) mprintf("call action-disk-plugged %d\n", n);
-		/* 
-		 * Note: partition should be umounted before unplugged, and 
+		if (ctrl->verbose)
+			mprintf("call action-disk-plugged %d\n", n);
+		/*
+		 * Note: partition should be umounted before unplugged, and
 		 * it's advicable to umount all partition in action-disk-unplugged script.
 		 * Here is just a prevention for operation mistake
 		 */
 		execute_script("action-disk-unplugged", n);
 		ctrl->force_chk_part = 1;
 		mxhtsp_set_led(fd, n, 0);
-                info[n-1].led_on = 0;
+		info[n-1].led_on = 0;
 	}
 
 	info[n-1].disk_plugged = ret;
@@ -102,7 +102,7 @@ static int handle_button_pressed(int fd, int n, htsp_info *info)
 	double time_used;
 	double time_threshold = (double)ctrl->time_btn_long * 1000.0;
 	clock_t now;
-	//int *ta = &info[n-1].btn_time_accum;
+	/* int *ta = &info[n-1].btn_time_accum; */
 	int *btn_event_start = &info[n-1].btn_event_start;
 	int *btn_last_pressed = &info[n-1].btn_last_pressed;
 
@@ -118,18 +118,17 @@ static int handle_button_pressed(int fd, int n, htsp_info *info)
 		info[n-1].press_time = clock();
 		*btn_event_start = 1;
 		*btn_last_pressed = 1;
-	}
-	else if (now_press == 0) {
+	} else if (now_press == 0) {
 		if (*btn_last_pressed == 1) {
 			now = clock();
 			time_used = ((double) (now - info[n-1].press_time));
 			mprintf("[btn=%d, pressed time elapsed = %f]\n", n, time_used);
 
 			/* check elapsed time over threshold */
-			if ( time_used > time_threshold ) {
+			if (time_used > time_threshold) {
 				if (*btn_event_start && info[n-1].first_insert == 0) {
 					mprintf("Button %d is pressed\n", n);
-					if ( mxhtsp_is_disk_busy(fd, n) == 1) { /* busy */
+					if (mxhtsp_is_disk_busy(fd, n) == 1) { /* busy */
 						mprintf("Disk %d is busy.\n", n);
 						if (ctrl->verbose)
 							mprintf("call action-btn-pressed %d\n", n+2);
@@ -158,84 +157,86 @@ void sig_handler(int signo)
 	ctrl->exit = 1;
 }
 
-static void usage() {
+static void usage(void)
+{
 	printf("Usage: mxhtspd [options] \n");
-//	printf("\t-i interval in seconds to check partition usage (defulat 60 secs) \n");
+	/* printf("\t-i interval in seconds to check partition usage (defulat 60 secs) \n"); */
 	printf("\t-l facility_num log daemon's message with LOCAL[facility_num]\n");
 	printf("\t-v run in verbose mode \n");
 	printf("\t-h print usage\n");
 	exit(1);
 }
 
-static void parseopt(int argc,char **argv) {
+static void parseopt(int argc, char **argv)
+{
 	char opt;
 	int num;
-	int facility[8] = {LOG_LOCAL0, LOG_LOCAL1, LOG_LOCAL2, LOG_LOCAL3, 
+	int facility[8] = {LOG_LOCAL0, LOG_LOCAL1, LOG_LOCAL2, LOG_LOCAL3,
 		LOG_LOCAL4, LOG_LOCAL5, LOG_LOCAL6, LOG_LOCAL7};
 
 	while ((opt = getopt(argc, argv, "t:i:l:dvh")) != -1) {
-		switch(opt) {
-			case 't':
-				num = atoi(optarg);
-				if (num <= 0) {
-					mprintf("can't set -t  %d", ctrl->time_btn_long);
-					exit(1);
-				}
-				ctrl->time_btn_long = num;
-				break;
+		switch (opt) {
+		case 't':
+			num = atoi(optarg);
+			if (num <= 0) {
+				mprintf("can't set -t  %d", ctrl->time_btn_long);
+				exit(1);
+			}
+			ctrl->time_btn_long = num;
+			break;
 
-			case 'i':
-				num = atoi(optarg);
-				if (num <= 0) {
-					mprintf("can't set -i %d", ctrl->time_chk_part);
-					exit(1);
-				}
-				ctrl->time_chk_part = num;
-				break;
+		case 'i':
+			num = atoi(optarg);
+			if (num <= 0) {
+				mprintf("can't set -i %d", ctrl->time_chk_part);
+				exit(1);
+			}
+			ctrl->time_chk_part = num;
+			break;
 
-			case 'l':
-				num = atoi(optarg);
-				if ((num > 7) && (num < 0)) {
-					mprintf("set a wrong log facility %d\n", num);
-					exit(1);
-				} 
-				openlog ("mxhtspd", LOG_CONS | LOG_PID | LOG_NDELAY, facility[num]); 
-				syslog(LOG_NOTICE,"Starting mxthspd daemon..."); 
-				d("start with local %d\n", num);
-				ctrl->log_facility = num;
-				break;
+		case 'l':
+			num = atoi(optarg);
+			if ((num > 7) && (num < 0)) {
+				mprintf("set a wrong log facility %d\n", num);
+				exit(1);
+			}
+			openlog("mxhtspd", LOG_CONS | LOG_PID | LOG_NDELAY, facility[num]);
+			syslog(LOG_NOTICE, "Starting mxthspd daemon...");
+			d("start with local %d\n", num);
+			ctrl->log_facility = num;
+			break;
 
-			case 'd':
-				ctrl->daemonize = 1;
-				break;
+		case 'd':
+			ctrl->daemonize = 1;
+			break;
 
-			case 'v':
-				ctrl->verbose = 1;
-				break;
+		case 'v':
+			ctrl->verbose = 1;
+			break;
 
-			case 'h':
-				usage();
-				break;
+		case 'h':
+			usage();
+			break;
 
-			case '?':
-				usage();
+		case '?':
+			usage();
 		}
 	}
 }
 
-static int create_pid_file()
+static int create_pid_file(void)
 {
 	FILE *fp;
 	pid_t pid = getpid();
 
-	fp = fopen(PID_FILE,"w");
+	fp = fopen(PID_FILE, "w");
 
 	if (!fp) {
 		mprintf("can't open pid file\n");
 		return -1;
 	}
 
-	if (fprintf(fp, "%d\n", (int)pid) <=0 ) {
+	if (fprintf(fp, "%d\n", (int)pid) <= 0) {
 		return -1;
 	}
 
@@ -243,18 +244,18 @@ static int create_pid_file()
 	return 0;
 }
 
-void remove_pid_file()
+void remove_pid_file(void)
 {
 	if (unlink(PID_FILE))
 		mprintf("can't remove pid file");
 }
 
-static void daemonize()
+static void daemonize(void)
 {
 	pid_t pid, sid;
 
 	/* already a daemon */
-	if (getppid() == 1) 
+	if (getppid() == 1)
 		return;
 
 	pid = fork();
@@ -288,7 +289,8 @@ static void daemonize()
 	close(STDERR_FILENO);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 	int fd;
 	int i;
 	htsp_info info[2] = {};
