@@ -1,0 +1,5 @@
+moxa-v2406c-hotswapd (1.0.0+deb9) stretch; urgency=low
+
+  * Initial release.
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Tue, 16 Jul 2019 10:49:50 +0800

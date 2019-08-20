@@ -1,0 +1,12 @@
+action-btn-pressed /usr/sbin
+action-disk-plugged /usr/sbin
+action-disk-unplugged /usr/sbin
+action-part-over-usage /usr/sbin
+mxhtspd-handle-disk-plugged /usr/sbin
+mxhtspd-handle-disk-unplugged /usr/sbin
+mxhtspd-remove-disk /usr/sbin
+mxhtspd-setled /usr/sbin
+mx_hotswapd.sh /usr/sbin
+mxhtspd /usr/sbin
+libmxhtsp.so /usr/lib
+96-moxa-disk.rules /etc/udev/rules.d
