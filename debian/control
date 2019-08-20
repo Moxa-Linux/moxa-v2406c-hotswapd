@@ -1,0 +1,14 @@
+Source: moxa-v2406c-hotswapd
+Section: admin
+Priority: required
+Maintainer: Elvis Yao <ElvisCW.Yao@moxa.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://www.moxa.com/
+
+Package: moxa-v2406c-hotswapd
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Daemon for monitoring SSD/HDD hot swap status on V-2406C series
+ It contains the necessary tools for setting up HDD hot swap status
