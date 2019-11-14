@@ -14,9 +14,6 @@ develop_build:
     except:
       refs:
         - stretch
-    only:
-      variables:
-        - $version
     script:
         - dpkg --add-architecture amd64
         - echo "deb http://mil-internal-apt:8080/mirror-debian_20190701/ stretch main contrib non-free" > /etc/apt/sources.list
@@ -37,8 +34,6 @@ release_build:
     only:
       refs:
         - stretch
-      variables:
-        - $version
     script:
         - dpkg --add-architecture amd64
         - echo "deb http://mil-internal-apt:8080/mirror-debian_20190701/ stretch main contrib non-free" > /etc/apt/sources.list
@@ -59,8 +54,6 @@ prepare_develop_debs:
     only:
       refs:
         - stretch-develop
-      variables:
-        - $version
     dependencies:
         - develop_build
     when: manual
@@ -76,8 +69,6 @@ prepare_release_debs:
     only:
       refs:
         - stretch
-      variables:
-        - $version
     dependencies:
         - release_build
     when: manual
