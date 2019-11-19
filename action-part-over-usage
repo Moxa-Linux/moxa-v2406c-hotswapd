@@ -1,0 +1,5 @@
+#!/bin/sh
+file=`basename $0`
+name=$1
+
+echo $file: ERROR! $name is over its maximum allowed usage
