@@ -12,5 +12,4 @@ else
 	echo "- - -" > /sys/class/scsi_host/$SATA_PORT2/scan 
 fi
 
-echo  mxhtspd: Scan disk $num ok
-
+echo "mxhtspd: Disk slot $num was detected." | wall -n

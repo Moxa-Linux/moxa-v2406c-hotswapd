@@ -11,10 +11,10 @@ umount_partitions() {
 	#Check partitions
 	partitions=`mount | awk -F' ' "/media\/disk${num}/{print $field}" | xargs -n 10`
 	if [ ! -z "$partitions" ] ; then
-		echo $file: WARNING! /media/disk${num}pn should be unmounted before disk is removed
-		echo $file: Force to unmount them
+		echo "$file: WARNING! /media/disk${num}pn should be unmounted before disk is removed"
+		echo "$file: Force to unmount them"
 		for i in $partitions; do 
-			umount $i 2> /dev/null
+			/bin/umount $i 2> /dev/null
 		done
 	fi
 }
@@ -62,7 +62,9 @@ if [ "$num" = "3" ] || [ "$num" = "4" ] ; then
 	        mxhtspd-setled $disk_num 0; sleep 1
         	mxhtspd-setled $disk_num 1; sleep 1
 	done
-	echo "mxhtspd: Can't remove disk $disk_num. It is busy."
+
+	# show message to all currently logged in users
+	echo "mxhtspd: Can't remove disk $disk_num. It is busy." | wall -n
 else
 	#Light success led
 	for i in 1 2 3;
@@ -70,5 +72,7 @@ else
 		mxhtspd-setled $num 1; sleep 1
 		mxhtspd-setled $num 0; sleep 1
 	done
-	echo mxhtspd: Remove disk $num ok
+
+	# show message to all currently logged in users
+	echo "mxhtspd: Remove disk $num is done." | wall -n
 fi

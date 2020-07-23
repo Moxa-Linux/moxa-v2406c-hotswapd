@@ -16,11 +16,11 @@ partitions=`mount | awk -F' ' "/media\/disk$num/{print $field}" | xargs -n 10`
 if [ ! -z "$partitions" ] ; then
 	echo 1 > /sys/class/scsi_host/$host/device/$target/$path/delete
 
-	echo $file: WARNING! /media/disk${num}pn should be unmounted before disk is removed
-	echo $file: Force to umount them
+	echo "$file: WARNING! /media/disk${num}pn should be unmounted before disk is removed" | wall -n
+	echo "$file: Force to umount them" | wall -n
 	for i in $partitions; do 
-		umount  $i
+		/bin/umount $i
 	done
 fi
 
-echo mxhtspd: Check disk $num status ok
+echo "mxhtspd: Check disk $num status ok"
