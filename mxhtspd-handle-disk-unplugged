@@ -2,7 +2,7 @@
 file=`basename $0`
 num=$1
 
-if [ $num -eq 1 ]; then
+if [ "$num" = "1" ]; then
 	host="host${num}"; target="target${num}:0:0"; path="${num}:0:0:0"
 else 
 	host="host${num}"; target="target${num}:0:0"; path="${num}:0:0:0"
