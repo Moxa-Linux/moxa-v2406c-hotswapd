@@ -1,3 +1,9 @@
+moxa-v2406c-hotswapd (1.0.2+deb9) stretch; urgency=low
+
+  * fix: plugged/unplugged disk message needs to broadcast all user
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Tue, 28 Jul 2020 11:07:29 +0800
+
 moxa-v2406c-hotswapd (1.0.1+deb9) stretch; urgency=low
 
   * fix: add no-automatic-dbgsym to debian rules
