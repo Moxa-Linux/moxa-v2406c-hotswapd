@@ -1,15 +1,26 @@
 #!/bin/sh
 file=`basename $0`
 num=$1
+host="host${num}"
+target="target${num}:0:0"
+timeout_sec=10
+count_sec=0
 
-#rescan bus
-SATA_PORT1="host1"
-SATA_PORT2="host2"
-
-if [ "$num" = "1" ]; then
-	echo "- - -" > /sys/class/scsi_host/$SATA_PORT1/scan 
+# rescan bus
+dev_host="/sys/class/scsi_host/${host}"
+if [ -d "$dev_host" ]; then
+	echo "- - -" > ${dev_host}/scan
 else
-	echo "- - -" > /sys/class/scsi_host/$SATA_PORT2/scan 
+	exit 1
 fi
 
-echo "mxhtspd: Disk slot $num was detected." | wall -n
+# check disk device is existed
+dev_target="${dev_host}/device/${target}"
+while [ ${count_sec} -lt ${timeout_sec} ]; do
+	if [ -d "${dev_target}" ]; then
+		echo "mxhtspd: Disk slot $num was detected." | wall -n
+		exit 0
+	fi
+	count_sec=$((count_sec + 1))
+	sleep 1
+done
