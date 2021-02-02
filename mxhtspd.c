@@ -142,6 +142,16 @@ static int handle_button_pressed(int fd, int n, htsp_info *info)
 						*btn_event_start = 0;
 					}
 				}
+			} else {
+				/* handling re-scanning SATA device */
+				if (*btn_event_start && info[n-1].first_insert == 0) {
+					mprintf("Button %d is pressed - Scanning Disk %d\n", n, n);
+					if (ctrl->verbose)
+						mprintf("call mxhtspd-handle-disk-plugged %d\n", n);
+
+					execute_script("mxhtspd-handle-disk-plugged", n);
+					*btn_event_start = 0;
+				}
 			}
 		}
 
