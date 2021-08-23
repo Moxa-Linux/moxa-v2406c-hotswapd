@@ -1,0 +1,11 @@
+[Unit]
+Description=Moxa HDD hot swap daemon service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/mx_hotswapd.sh start
+ExecStop=/usr/sbin/mx_hotswapd.sh stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
