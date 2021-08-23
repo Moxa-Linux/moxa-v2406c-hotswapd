@@ -24,3 +24,17 @@ clean:
 mytest:
 	@$(CC) $(CFLAGS) $(LDFLAGS) mytest.c -o mytest
 
+install:
+	/usr/bin/install -m 755 -D action-btn-pressed /usr/sbin/action-btn-pressed
+	/usr/bin/install -m 755 -D action-disk-plugged /usr/sbin/action-disk-plugged
+	/usr/bin/install -m 755 -D action-disk-unplugged /usr/sbin/action-disk-unplugged
+	/usr/bin/install -m 755 -D action-part-over-usage /usr/sbin/action-part-over-usage
+	/usr/bin/install -m 755 -D mxhtspd-handle-disk-plugged /usr/sbin/mxhtspd-handle-disk-plugged
+	/usr/bin/install -m 755 -D mxhtspd-handle-disk-unplugged /usr/sbin/mxhtspd-handle-disk-unplugged
+	/usr/bin/install -m 755 -D mxhtspd-remove-disk /usr/sbin/mxhtspd-remove-disk
+	/usr/bin/install -m 755 -D mxhtspd-setled /usr/sbin/mxhtspd-setled
+	/usr/bin/install -m 755 -D mx_hotswapd.sh /usr/sbin/mx_hotswapd.sh
+	/usr/bin/install -m 755 -D mxhtspd /usr/sbin/mxhtspd
+	/usr/bin/install -m 644 -D libmxhtsp.so /usr/lib/libmxhtsp.so
+	/usr/bin/install -m 644 -D 96-moxa-disk.rules /etc/udev/rules.d/96-moxa-disk.rules
+	/usr/bin/install -m 644 -D mx_hotswapd.service /lib/systemd/system/mx_hotswapd.service
