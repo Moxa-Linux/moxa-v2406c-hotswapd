@@ -15,8 +15,8 @@ $(LIB): $(LIB_FILE)
 	@$(CC) $(CFLAGS) -shared $(LIB_FILE:.c=.o) -o $(LIB) -lc
 
 $(PROG): $(PROG).c $(LIB) $(LED_PROG).c
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(PROG).c -o $(PROG)
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(LED_PROG).c -o $(LED_PROG)
+	@$(CC) $(CFLAGS) $(PROG).c -o $(PROG) $(LDFLAGS)
+	@$(CC) $(CFLAGS) $(LED_PROG).c -o $(LED_PROG) $(LDFLAGS)
 
 clean:
 	@rm -f $(PROG) $(LIB) $(LED_PROG) mxhtsp_lx.o
